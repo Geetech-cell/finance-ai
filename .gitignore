@@ -1,0 +1,66 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Data files (avoid pushing large datasets)
+data/raw/
+data/processed/
+data/external/
+
+# Models
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.pt
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Docker
+*.pid
+
+# SQLite DB
+*.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# MLflow
+mlruns/
+
+# Reports and results
+reports/*
+results/*
+!reports/.gitkeep
+!results/.gitkeep
