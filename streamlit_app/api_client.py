@@ -8,11 +8,24 @@ import streamlit as st
 
 class FinanceAPIClient:
     def __init__(self, base_url: str = None):
-        # Use environment variable or default to production API
+        # Use environment variable or default to local API
         if base_url is None:
             base_url = os.getenv('API_BASE_URL', 'http://localhost:8000')
         self.base_url = base_url.rstrip('/')
         self.session = requests.Session()
+        
+        # Add retry logic for better reliability
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+        
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
     
     def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict[str, Any]:
         """Make HTTP request to API"""

@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -17,13 +18,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p models data/processed data/raw reports results
+RUN mkdir -p models data/processed data/raw reports results /var/log
 
-# Remove database initialization from build - will be handled at runtime
-# RUN python -m backend.app.init_db
+# Copy supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Set environment variable for Streamlit
+ENV API_BASE_URL=http://localhost:8000
 
 EXPOSE 8000
 EXPOSE 8501
 
-# Default command
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start supervisor to run both services
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
