@@ -12,32 +12,46 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d finance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     build: .
     container_name: finance_api
-    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
     volumes:
-      - .:/app
+      - ./models:/app/models
+      - ./data:/app/data
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       POSTGRES_HOST: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: finance
+      POSTGRES_PORT: 5432
+    restart: unless-stopped
 
   dashboard:
     build: .
     container_name: finance_dashboard
     command: streamlit run streamlit_app/app.py --server.port=8501 --server.address=0.0.0.0
     volumes:
-      - .:/app
+      - ./models:/app/models
+      - ./data:/app/data
     ports:
       - "8501:8501"
     depends_on:
       - api
     environment:
       - API_BASE_URL=http://api:8000
+    restart: unless-stopped
 
 volumes:
   postgres_data:

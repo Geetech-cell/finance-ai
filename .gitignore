@@ -16,6 +16,7 @@ venv/
 data/raw/
 data/processed/
 data/external/
+data/sample_data_*.csv
 
 # Models
 models/*.pkl
@@ -55,6 +56,10 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.orig
+*.backup
+*.swp
 
 # MLflow
 mlruns/
@@ -64,3 +69,21 @@ reports/*
 results/*
 !reports/.gitkeep
 !results/.gitkeep
+
+# Deployment files (not needed in main repo)
+deploy/
+
+# Test files
+*test*.py
+!src/training/test_*.py
+!src/inference/test_*.py
+
+# Package managers
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.production
