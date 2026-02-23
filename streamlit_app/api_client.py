@@ -2,11 +2,15 @@
 API Client for connecting Streamlit to FastAPI backend
 """
 import requests
+import os
 from typing import Dict, List, Optional, Any
 import streamlit as st
 
 class FinanceAPIClient:
-    def __init__(self, base_url: str = "http://api:8000"):
+    def __init__(self, base_url: str = None):
+        # Use environment variable or default to production API
+        if base_url is None:
+            base_url = os.getenv('API_BASE_URL', 'http://localhost:8000')
         self.base_url = base_url.rstrip('/')
         self.session = requests.Session()
     
