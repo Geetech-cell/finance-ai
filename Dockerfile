@@ -19,8 +19,8 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p models data/processed data/raw reports results
 
-# Initialize database
-RUN python -m backend.app.init_db
+# Remove database initialization from build - will be handled at runtime
+# RUN python -m backend.app.init_db
 
 EXPOSE 8000
 EXPOSE 8501
