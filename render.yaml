@@ -1,4 +1,11 @@
 services:
+  # PostgreSQL Database (Render Native)
+  - type: postgres
+    name: finance-db
+    plan: free
+    databaseName: finance
+    user: admin
+
   # API Service
   - type: web
     name: finance-api
@@ -26,18 +33,3 @@ services:
     envVars:
       - key: API_BASE_URL
         value: https://finance-api.onrender.com
-
-  # PostgreSQL Database
-  - type: pserv
-    name: finance-db
-    env: docker
-    plan: free
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    envVars:
-      - key: POSTGRES_USER
-        value: admin
-      - key: POSTGRES_PASSWORD
-        value: password
-      - key: POSTGRES_DB
-        value: finance
