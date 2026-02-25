@@ -25,9 +25,7 @@ services:
     dockerContext: .
     envVars:
       - key: API_BASE_URL
-        fromService:
-          name: finance-api
-          property: url
+        value: https://finance-api.onrender.com
 
   # PostgreSQL Database
   - type: pserv
