@@ -1,0 +1,45 @@
+services:
+  # API Service
+  - type: web
+    name: finance-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: POSTGRES_URL
+        fromDatabase:
+          name: finance-db
+          property: connectionString
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finance-db
+          property: connectionString
+
+  # Streamlit Dashboard
+  - type: web
+    name: finance-dashboard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run streamlit_app/app.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: API_BASE_URL
+        fromService:
+          name: finance-api
+          property: url
+
+  # PostgreSQL Database
+  - type: pserv
+    name: finance-db
+    env: docker
+    plan: free
+    repo: https://github.com/render-examples/postgres
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: POSTGRES_USER
+        value: admin
+      - key: POSTGRES_PASSWORD
+        value: password
+      - key: POSTGRES_DB
+        value: finance

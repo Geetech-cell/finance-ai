@@ -106,6 +106,6 @@ class FinanceAPIClient:
 # Initialize API client
 def get_api_client():
     """Get cached API client instance"""
-    # Default to localhost for local development
-    base_url = "http://localhost:8000"
+    # Use environment variable for API URL (Render will set this)
+    base_url = os.getenv('API_BASE_URL', 'http://localhost:8000')
     return FinanceAPIClient(base_url)
