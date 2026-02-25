@@ -2,10 +2,10 @@ services:
   # API Service
   - type: web
     name: finance-api
-    env: python
+    env: docker
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: ./Dockerfile.api
+    dockerContext: .
     envVars:
       - key: POSTGRES_URL
         fromDatabase:
@@ -19,10 +19,10 @@ services:
   # Streamlit Dashboard
   - type: web
     name: finance-dashboard
-    env: python
+    env: docker
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run streamlit_app/app.py --server.port=$PORT --server.address=0.0.0.0
+    dockerfilePath: ./Dockerfile.dashboard
+    dockerContext: .
     envVars:
       - key: API_BASE_URL
         fromService:
@@ -34,8 +34,8 @@ services:
     name: finance-db
     env: docker
     plan: free
-    repo: https://github.com/render-examples/postgres
     dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: POSTGRES_USER
         value: admin
