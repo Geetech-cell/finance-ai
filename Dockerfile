@@ -28,8 +28,18 @@ RUN chown -R app:app /app
 # Switch to non-root user
 USER app
 
-# Set environment variable for Render
+# Set environment variable for local API connection
 ENV API_BASE_URL=http://localhost:8000
 
-# Use Render's PORT environment variable
-CMD streamlit run streamlit_app/app.py --server.port=$PORT --server.address=0.0.0.0
+# Create startup script
+RUN echo '#!/bin/bash\n\
+# Start API in background\n\
+uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 &\n\
+# Wait for API to start\n\
+sleep 10\n\
+# Start Streamlit on Render port\n\
+streamlit run streamlit_app/app.py --server.port=$PORT --server.address=0.0.0.0' > /app/start.sh && \
+chmod +x /app/start.sh
+
+# Use the startup script
+CMD ["/app/start.sh"]
